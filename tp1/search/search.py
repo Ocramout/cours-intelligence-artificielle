@@ -86,18 +86,57 @@ def depthFirstSearch(problem):
     print "Is the start a goal?", problem.isGoalState(problem.getStartState())
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    opened = util.Stack()
+    closed = []
+    result = []
+    initial = problem.getStartState()
+
+    opened.push((initial, result))
+
+    while (not opened.isEmpty()):
+        current, actions = opened.pop()
+
+        if not current in closed:
+            closed.append(current)
+
+            if (problem.isGoalState(current)):
+                return actions
+
+            for successor in problem.getSuccessors(current):
+                coordinate, action, _ = successor
+                newActions = actions + [action]
+                opened.push((coordinate, newActions))
+
+    return []
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    opened = util.Queue()
+    closed = []
+    result = []
+    initial = problem.getStartState()
+
+    opened.push((initial, result))
+
+    while (not opened.isEmpty()):
+        current, actions = opened.pop()
+
+        if (not current in closed):
+            closed.append(current)
+
+            if (problem.isGoalState(current)):
+                return actions
+
+            for successor in problem.getSuccessors(current):
+                coordinate, action, _ = successor
+                newActions = actions + [action]
+                opened.push((coordinate, newActions))
+
+    return []
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    return aStarSearch(problem)
 
 def nullHeuristic(state, problem=None):
     """
@@ -108,9 +147,29 @@ def nullHeuristic(state, problem=None):
 
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    opened = util.PriorityQueue()
+    closed = []
+    result = []
+    initial = problem.getStartState()
 
+    opened.push((initial, result), heuristic(initial, problem))
+
+    while (not opened.isEmpty()):
+        current, actions = opened.pop()
+
+        if (not current in closed):
+            closed.append(current)
+
+            if (problem.isGoalState(current)):
+                return actions
+
+            for successor in problem.getSuccessors(current):
+                coordinate, action, stepCost = successor
+                newActions = actions + [action]
+                newCost = problem.getCostOfActions(newActions) + heuristic(coordinate, problem)
+                opened.push((coordinate, newActions), newCost)
+
+    return []
 
 # Abbreviations
 bfs = breadthFirstSearch
